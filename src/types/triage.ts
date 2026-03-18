@@ -3,6 +3,7 @@ export type Category = 'Consulta' | 'Exames' | 'Cirurgia' | 'Pós-op' | 'Lente d
 
 export interface TriageItem {
   id: string;
+  phone?: string;
   patient: string;
   category: Category;
   status: Status;

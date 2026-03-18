@@ -67,11 +67,6 @@ export default {
           text: "hsl(var(--status-atendimento-text))",
           border: "hsl(var(--status-atendimento-border))",
         },
-        "status-humano": {
-          DEFAULT: "hsl(var(--status-humano-bg))",
-          text: "hsl(var(--status-humano-text))",
-          border: "hsl(var(--status-humano-border))",
-        },
         "status-finalizado": {
           DEFAULT: "hsl(var(--status-finalizado-bg))",
           text: "hsl(var(--status-finalizado-text))",

@@ -1,13 +1,15 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Search, UserPlus, CheckCircle2, MoreHorizontal, User, Clock, MessageSquare } from 'lucide-react';
+import { Search, UserPlus, CheckCircle2, MoreHorizontal, User, Clock, MessageSquare, RefreshCw } from 'lucide-react';
 import { StatusBadge } from '@/components/StatusBadge';
+import { WaitingTimeBadge } from '@/components/WaitingTimeBadge';
 import { AssumeModal } from '@/components/AssumeModal';
 import { MOCK_DATA } from '@/data/mockTriageData';
 import type { TriageItem } from '@/types/triage';
 
 const CATEGORIES = ['Consulta', 'Exames', 'Cirurgia', 'Pós-op', 'Lente de Contato', 'Olho Seco', 'Falar com Equipe'] as const;
 const RESPONSAVEIS = ['Karla', 'Jodele'] as const;
+const POLLING_INTERVAL = 15000; // 15 seconds
 
 export default function TriageDashboard() {
   const [items, setItems] = useState<TriageItem[]>(MOCK_DATA);
@@ -17,6 +19,29 @@ export default function TriageDashboard() {
   const [search, setSearch] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [lastRefresh, setLastRefresh] = useState(new Date());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      // TODO: Replace with actual API call
+      // const response = await fetch('/api/triage');
+      // const data = await response.json();
+      // setItems(data);
+      setLastRefresh(new Date());
+    } catch (error) {
+      console.error('Erro ao atualizar dados:', error);
+    } finally {
+      setTimeout(() => setIsRefreshing(false), 500);
+    }
+  }, []);
+
+  // Auto-polling
+  useEffect(() => {
+    const interval = setInterval(fetchData, POLLING_INTERVAL);
+    return () => clearInterval(interval);
+  }, [fetchData]);
 
   const filteredItems = useMemo(() => {
     return items.filter(item => {
@@ -59,11 +84,21 @@ export default function TriageDashboard() {
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">Triagem WhatsApp</h1>
             <p className="text-muted-foreground text-sm">Clínica Oftalmológica — Painel de Controle</p>
           </div>
-          <div className="h-10 px-4 bg-card border border-border rounded-lg flex items-center gap-2 text-sm text-muted-foreground shadow-sm w-fit">
-            <Clock size={16} />
-            <span className="tabular-nums font-medium">
-              {new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-            </span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={fetchData}
+              className="h-10 px-3 bg-card border border-border rounded-lg flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground shadow-sm transition-all"
+              title="Atualizar agora"
+            >
+              <RefreshCw size={14} className={isRefreshing ? 'animate-spin' : ''} />
+              <span className="hidden sm:inline text-xs">Atualizar</span>
+            </button>
+            <div className="h-10 px-4 bg-card border border-border rounded-lg flex items-center gap-2 text-sm text-muted-foreground shadow-sm">
+              <Clock size={16} />
+              <span className="tabular-nums font-medium">
+                {lastRefresh.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+              </span>
+            </div>
           </div>
         </header>
 
@@ -74,7 +109,6 @@ export default function TriageDashboard() {
               { value: 'ALL', label: 'Todos os Status' },
               { value: 'NOVO', label: 'Novo' },
               { value: 'EM_ATENDIMENTO', label: 'Em Atendimento' },
-              { value: 'HUMANO', label: 'Humano' },
               { value: 'FINALIZADO', label: 'Finalizado' },
             ]}
           />
@@ -108,11 +142,11 @@ export default function TriageDashboard() {
         {/* Table */}
         <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[700px]">
+            <table className="w-full text-left border-collapse min-w-[800px]">
               <thead>
                 <tr className="bg-muted/50 border-b border-border">
-                  {['Paciente', 'Categoria', 'Status', 'Responsável', 'Última Mensagem', ''].map((h, i) => (
-                    <th key={i} className={`px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-muted-foreground ${i === 5 ? 'text-right' : ''}`}>
+                  {['Paciente', 'Categoria', 'Status', 'Espera', 'Responsável', 'Última Msg', ''].map((h, i) => (
+                    <th key={i} className={`px-5 py-4 text-[11px] font-bold uppercase tracking-widest text-muted-foreground ${i === 6 ? 'text-right' : ''}`}>
                       {h || 'Ações'}
                     </th>
                   ))}
@@ -124,9 +158,8 @@ export default function TriageDashboard() {
                     layout
                     key={item.id}
                     className="hover:bg-muted/30 transition-colors duration-150"
-                    style={{ transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)' }}
                   >
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                           <User size={14} />
@@ -134,9 +167,12 @@ export default function TriageDashboard() {
                         <span className="font-medium text-foreground">{item.patient}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">{item.category}</td>
-                    <td className="px-6 py-4"><StatusBadge status={item.status} /></td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-4 text-sm text-muted-foreground">{item.category}</td>
+                    <td className="px-5 py-4"><StatusBadge status={item.status} /></td>
+                    <td className="px-5 py-4">
+                      <WaitingTimeBadge contactTime={item.contactTime} status={item.status} />
+                    </td>
+                    <td className="px-5 py-4">
                       {item.responsible ? (
                         <div className="flex items-center gap-2 text-sm text-foreground">
                           <div className="w-1.5 h-1.5 rounded-full bg-primary" />
@@ -146,12 +182,12 @@ export default function TriageDashboard() {
                         <span className="text-xs text-muted-foreground italic">Aguardando</span>
                       )}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-4">
                       <span className="text-sm tabular-nums text-muted-foreground">
                         {new Date(item.lastMessage).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-5 py-4 text-right">
                       <div className="flex justify-end gap-1">
                         {item.status !== 'FINALIZADO' && (
                           <>
@@ -181,6 +217,10 @@ export default function TriageDashboard() {
             </div>
           )}
         </div>
+
+        <p className="text-xs text-muted-foreground mt-3 text-right">
+          Atualização automática a cada {POLLING_INTERVAL / 1000}s
+        </p>
       </div>
 
       <AssumeModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onConfirm={confirmAssume} />

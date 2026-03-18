@@ -4,6 +4,7 @@ import { Search, UserPlus, CheckCircle2, User, Clock, MessageSquare, RefreshCw }
 import { StatusBadge } from '@/components/StatusBadge';
 import { WaitingTimeBadge } from '@/components/WaitingTimeBadge';
 import { RespondedButton } from '@/components/RespondedButton';
+import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { AssumeModal } from '@/components/AssumeModal';
 import { TriageFilters } from '@/components/TriageFilters';
 import { MOCK_DATA } from '@/data/mockTriageData';
@@ -251,6 +252,7 @@ export default function TriageDashboard() {
                         )}
                         {item.status === 'EM_ATENDIMENTO' && (
                           <RespondedButton itemId={item.id} onSuccess={handleRespondedSuccess} />
+                  <WhatsAppButton phone={item.phone} />
                         )}
                         {item.status !== 'FINALIZADO' && (
                           <button onClick={() => handleFinish(item.id)} className="p-2 text-muted-foreground hover:text-status-novo-text hover:bg-status-novo rounded-lg transition-all duration-150" title="Finalizar">

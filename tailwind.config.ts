@@ -57,6 +57,26 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        "status-novo": {
+          DEFAULT: "hsl(var(--status-novo-bg))",
+          text: "hsl(var(--status-novo-text))",
+          border: "hsl(var(--status-novo-border))",
+        },
+        "status-atendimento": {
+          DEFAULT: "hsl(var(--status-atendimento-bg))",
+          text: "hsl(var(--status-atendimento-text))",
+          border: "hsl(var(--status-atendimento-border))",
+        },
+        "status-humano": {
+          DEFAULT: "hsl(var(--status-humano-bg))",
+          text: "hsl(var(--status-humano-text))",
+          border: "hsl(var(--status-humano-border))",
+        },
+        "status-finalizado": {
+          DEFAULT: "hsl(var(--status-finalizado-bg))",
+          text: "hsl(var(--status-finalizado-text))",
+          border: "hsl(var(--status-finalizado-border))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

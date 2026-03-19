@@ -8,7 +8,7 @@ import { ForwardButton } from '@/components/ForwardButton';
 import { ObservationCell } from '@/components/ObservationCell';
 import { AssumeModal } from '@/components/AssumeModal';
 import { TriageFilters } from '@/components/TriageFilters';
-import type { TriageItem, Status } from '@/types/triage';
+import type { TriageItem, Status, Category } from '@/types/triage';
 
 const POLLING_INTERVAL = 30000;
 
@@ -60,7 +60,7 @@ export default function TriageDashboard() {
           id: item.id,
           phone: String(item.phone || ''),
           patient: item.name || '',
-          category: (item.categoria as Category) || 'Consulta',
+          category: (item.categoria as Category) || ('Consulta' as Category),
           status: (item.status as Status) || 'NOVO',
           responsible: item.assumido_por || item.responsavel || undefined,
           lastMessage: item.mensagem_paciente || '',

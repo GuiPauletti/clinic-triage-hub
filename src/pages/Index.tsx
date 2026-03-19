@@ -8,7 +8,6 @@ import { ForwardButton } from '@/components/ForwardButton';
 import { ObservationCell } from '@/components/ObservationCell';
 import { AssumeModal } from '@/components/AssumeModal';
 import { TriageFilters } from '@/components/TriageFilters';
-import { MOCK_DATA } from '@/data/mockTriageData';
 import type { TriageItem, Status } from '@/types/triage';
 
 const POLLING_INTERVAL = 30000;
@@ -37,7 +36,7 @@ function sortItems(items: TriageItem[]): TriageItem[] {
 }
 
 export default function TriageDashboard() {
-  const [items, setItems] = useState<TriageItem[]>(MOCK_DATA);
+  const [items, setItems] = useState<TriageItem[]>([]);
   const [filterStatus, setFilterStatus] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState('ALL');
   const [filterResponsible, setFilterResponsible] = useState('ALL');
@@ -50,12 +49,35 @@ export default function TriageDashboard() {
   const fetchData = useCallback(async () => {
     setIsRefreshing(true);
     try {
+      const res = await fetch(
+        'https://consultoriooftalmogui.app.n8n.cloud/webhook/triagem/list?key=Gui@oftalmoSul2026'
+      );
+      if (!res.ok) throw new Error('Erro ao buscar dados');
+      const data: any[] = await res.json();
+      const mapped: TriageItem[] = data
+        .filter((item: any) => item.id)
+        .map((item: any) => ({
+          id: item.id,
+          phone: String(item.phone || ''),
+          patient: item.name || '',
+          category: (item.categoria as Category) || 'Consulta',
+          status: (item.status as Status) || 'NOVO',
+          responsible: item.assumido_por || item.responsavel || undefined,
+          lastMessage: item.mensagem_paciente || '',
+          contactTime: item.data_hora || new Date().toISOString(),
+          observacao: item.observacao_interna || '',
+        }));
+      setItems(mapped);
       setLastRefresh(new Date());
     } catch (error) {
       console.error('Erro ao atualizar dados:', error);
     } finally {
       setTimeout(() => setIsRefreshing(false), 500);
     }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   useEffect(() => {

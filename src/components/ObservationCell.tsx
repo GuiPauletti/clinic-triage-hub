@@ -20,7 +20,7 @@ export function ObservationCell({ itemId, initialValue = '' }: ObservationCellPr
       await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: itemId, observacao: value }),
+        body: JSON.stringify({ id: itemId, observacao_interna: value }),
       });
     } catch (error) {
       console.error('Erro ao salvar observação:', error);

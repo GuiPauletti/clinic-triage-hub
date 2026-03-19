@@ -1,5 +1,7 @@
+import React from 'react';
+
 interface WhatsAppButtonProps {
-  phone: string;
+  phone?: string;
 }
 
 const formatPhone = (phone: string): string => {

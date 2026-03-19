@@ -9,7 +9,7 @@ const App = () => (
   <TooltipProvider>
     <Toaster />
     <Sonner />
-    <BrowserRouter>
+    <BrowserRouter basename="/clinic-triage-hub">
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="*" element={<NotFound />} />

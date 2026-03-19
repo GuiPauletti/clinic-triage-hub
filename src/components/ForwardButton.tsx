@@ -8,7 +8,7 @@ interface ForwardButtonProps {
 }
 
 const RESPONSAVEIS = ['Dr Guilherme', 'Karla', 'Jodele', 'Carlise', 'Rafael'];
-const WEBHOOK_URL = 'https://consultoriooftalmogui.app.n8n.cloud/webhook/triagem/update?key=Gui@oftalmoSul2026';
+const WEBHOOK_URL = 'https://consultoriooftalmogui.app.n8n.cloud/webhook/triagem/assign?key=Gui@oftalmoSul2026';
 
 export function ForwardButton({ itemId, currentResponsible, onSuccess }: ForwardButtonProps) {
   const [open, setOpen] = useState(false);

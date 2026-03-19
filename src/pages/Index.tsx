@@ -251,8 +251,10 @@ export default function TriageDashboard() {
                           </button>
                         )}
                         {item.status === 'EM_ATENDIMENTO' && (
-                          <RespondedButton itemId={item.id} onSuccess={handleRespondedSuccess} />
-                  <WhatsAppButton phone={item.phone} />
+                          <>
+                            <RespondedButton itemId={item.id} onSuccess={handleRespondedSuccess} />
+                            <WhatsAppButton phone={item.phone} />
+                          </>
                         )}
                         {item.status !== 'FINALIZADO' && (
                           <button onClick={() => handleFinish(item.id)} className="p-2 text-muted-foreground hover:text-status-novo-text hover:bg-status-novo rounded-lg transition-all duration-150" title="Finalizar">

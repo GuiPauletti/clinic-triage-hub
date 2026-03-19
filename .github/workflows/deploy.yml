@@ -28,7 +28,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: run: npm install
+        run: npm install
 
       - name: Build
         run: npm run build -- --base=/clinic-triage-hub/

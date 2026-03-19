@@ -1,7 +1,7 @@
 import { Search } from 'lucide-react';
 
 const CATEGORIES = ['Consulta', 'Exames', 'Cirurgia', 'Pós-op', 'Lente de Contato', 'Olho Seco', 'Falar com Equipe'] as const;
-const RESPONSAVEIS = ['Karla', 'Jodele'] as const;
+const RESPONSAVEIS = ['Dr Guilherme', 'Karla', 'Jodele', 'Carlise', 'Rafael'] as const;
 
 interface TriageFiltersProps {
   filterStatus: string;

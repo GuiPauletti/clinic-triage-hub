@@ -7,7 +7,8 @@ export type Category =
   | 'Pós-op'
   | 'Lente de Contato'
   | 'Olho Seco'
-  | 'Falar com Equipe';
+  | 'Falar com Equipe'
+  | 'Sem Categoria';
 
 export interface TriageItem {
   id: string;

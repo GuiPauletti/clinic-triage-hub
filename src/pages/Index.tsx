@@ -35,6 +35,19 @@ function sortItems(items: TriageItem[]): TriageItem[] {
   });
 }
 
+
+function parseContactTime(dateStr: string): string {
+  if (!dateStr) return new Date().toISOString();
+  // Already ISO format
+  if (dateStr.includes('T')) return dateStr;
+  // DD-MM-YYYY HH:mm
+  const match = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2})/);
+  if (match) {
+    const [, dd, mm, yyyy, hh, min] = match;
+    return new Date(Number(yyyy), Number(mm) - 1, Number(dd), Number(hh), Number(min)).toISOString();
+  }
+  return new Date().toISOString();
+}
 export default function TriageDashboard() {
   const [items, setItems] = useState<TriageItem[]>([]);
   const [filterStatus, setFilterStatus] = useState('ALL');
@@ -60,11 +73,11 @@ export default function TriageDashboard() {
           id: item.id,
           phone: String(item.phone || ''),
           patient: item.name || '',
-          category: (item.categoria as Category) || ('Consulta' as Category),
+          category: (item.categoria as Category) || ('Sem Categoria' as Category),
           status: (item.status as Status) || 'NOVO',
           responsible: item.assumido_por || item.responsavel || undefined,
           lastMessage: item.mensagem_paciente || '',
-          contactTime: item.data_hora || new Date().toISOString(),
+          contactTime: parseContactTime(item.data_hora),
           observacao: item.observacao_interna || '',
         }));
       setItems(mapped);

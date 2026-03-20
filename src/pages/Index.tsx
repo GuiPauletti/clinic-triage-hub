@@ -256,15 +256,6 @@ export default function TriageDashboard() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end items-center gap-1 flex-wrap">
-                        {item.status === 'NOVO' && (
-                          <button
-                            onClick={() => handleAssume(item.id)}
-                            className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-all duration-150"
-                            title="Assumir"
-                          >
-                            <UserPlus size={18} />
-                          </button>
-                        )}
                         <ForwardButton
                           itemId={item.id}
                           onSuccess={(r) => handleForward(item.id, r)}

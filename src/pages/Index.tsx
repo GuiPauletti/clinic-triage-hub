@@ -1,12 +1,13 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Search, UserPlus, CheckCircle2, User, Clock, MessageSquare, RefreshCw } from 'lucide-react';
+import { Search, UserPlus, CheckCircle2, User, Clock, MessageSquare, RefreshCw, LogOut } from 'lucide-react';
 import { StatusBadge } from '@/components/StatusBadge';
 import { WaitingTimeBadge } from '@/components/WaitingTimeBadge';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { ForwardButton } from '@/components/ForwardButton';
 import { ObservationCell } from '@/components/ObservationCell';
 import { AssumeModal } from '@/components/AssumeModal';
+import { useAuth } from '@/contexts/AuthContext';
 import { TriageFilters } from '@/components/TriageFilters';
 import type { TriageItem, Status, Category } from '@/types/triage';
 
@@ -49,6 +50,7 @@ function parseContactTime(dateStr: string): string {
   return new Date().toISOString();
 }
 export default function TriageDashboard() {
+  const { currentUser, logout } = useAuth();
   const [items, setItems] = useState<TriageItem[]>([]);
   const [filterStatus, setFilterStatus] = useState('ALL');
   const [filterCategory, setFilterCategory] = useState('ALL');
@@ -168,6 +170,14 @@ export default function TriageDashboard() {
                 {lastRefresh.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </span>
             </div>
+            <button
+              onClick={logout}
+              className="h-10 px-3 bg-card border border-border rounded-lg flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground shadow-sm transition-all"
+              title="Sair"
+            >
+              <LogOut size={14} />
+              <span className="hidden sm:inline text-xs">{currentUser}</span>
+            </button>
           </div>
         </header>
 
@@ -257,7 +267,6 @@ export default function TriageDashboard() {
                         )}
                         <ForwardButton
                           itemId={item.id}
-                          currentResponsible={item.responsible}
                           onSuccess={(r) => handleForward(item.id, r)}
                         />
                         <WhatsAppButton phone={item.phone} />

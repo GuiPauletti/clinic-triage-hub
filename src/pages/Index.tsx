@@ -37,6 +37,23 @@ function sortItems(items: TriageItem[]): TriageItem[] {
 }
 
 
+function formatElapsedTime(start: string, end?: string): string {
+  if (!start) return '';
+  try {
+    const parts = start.split(' ');
+    const [d, m, y] = parts[0].split('-');
+    const t = parts[1] || '00:00';
+    const s = new Date(`${y}-${m}-${d}T${t}`);
+    const e = end ? (() => { const p=end.split(' ');const [d2,m2,y2]=p[0].split('-');return new Date(`${y2}-${m2}-${d2}T${p[1]||'00:00'}`);})() : new Date();
+    const diffMs = e.getTime() - s.getTime();
+    if (diffMs <= 0) return '';
+    const h = Math.floor(diffMs / 3600000);
+    const min = Math.floor((diffMs % 3600000) / 60000);
+    return h > 0 ? `${h}h ${min}m` : `${min}m`;
+  } catch { return ''; }
+}
+
+
 function parseContactTime(dateStr: string): string {
   if (!dateStr) return new Date().toISOString();
   // Already ISO format
@@ -81,8 +98,8 @@ export default function TriageDashboard() {
           lastMessage: item.mensagem_paciente || '',
           contactTime: parseContactTime(item.data_hora),
           observacao: item.observacao_interna || '',
-        tempo_sem_resposta: item.tempo_sem_resposta || undefined,
-        tempo_total_contato: item.tempo_total_contato || undefined,
+        tempo_sem_resposta: item.status !== 'FINALIZADO' ? formatElapsedTime(item.data_hora) : undefined,
+        tempo_total_contato: formatElapsedTime(item.data_hora, item.data_finalizacao || undefined),
         data_finalizacao: item.data_finalizacao || undefined,
         }));
       setItems(mapped);

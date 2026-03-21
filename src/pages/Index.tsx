@@ -81,6 +81,9 @@ export default function TriageDashboard() {
           lastMessage: item.mensagem_paciente || '',
           contactTime: parseContactTime(item.data_hora),
           observacao: item.observacao_interna || '',
+        tempo_sem_resposta: item.tempo_sem_resposta || undefined,
+        tempo_total_contato: item.tempo_total_contato || undefined,
+        data_finalizacao: item.data_finalizacao || undefined,
         }));
       setItems(mapped);
       setLastRefresh(new Date());

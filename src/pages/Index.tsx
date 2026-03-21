@@ -53,6 +53,13 @@ function formatElapsedTime(start: string, end?: string): string {
   } catch { return ''; }
 }
 
+function idToDateStr(id: string): string {
+  const ts = parseInt((id || '').split('-')[1]);
+  if (isNaN(ts)) return '';
+  const d = new Date(ts);
+  return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
 
 function parseContactTime(dateStr: string): string {
   if (!dateStr) return new Date().toISOString();
@@ -99,7 +106,7 @@ export default function TriageDashboard() {
           contactTime: parseContactTime(item.data_hora),
           observacao: item.observacao_interna || '',
         tempo_sem_resposta: item.status !== 'FINALIZADO' ? formatElapsedTime(item.data_hora) : undefined,
-        tempo_total_contato: formatElapsedTime(item.data_hora, item.data_finalizacao || undefined),
+        tempo_total_contato: formatElapsedTime(idToDateStr(item.id) || item.data_hora, item.data_finalizacao || undefined),
         data_finalizacao: item.data_finalizacao || undefined,
         }));
       setItems(mapped);
